@@ -10,6 +10,7 @@
 !*/
 !.gitignore
 
+*.jou
 /vhdl-project-uart.sim
 /vhdl-project-uart.ip_user_files
 /vhdl-project-uart.hw
@@ -74,10 +75,6 @@
 #########
 !*.tcl
 #########
-#Journal - files
-#########
-!*.jou
-#########
 #Reports
 #########
 !*.rpt
@@ -91,3 +88,5 @@
 !*.elf
 !*.bmm
 !*.xmp
+
+/vhdl-project-uart.cache\wt\

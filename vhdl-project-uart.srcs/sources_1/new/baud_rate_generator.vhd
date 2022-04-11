@@ -31,7 +31,7 @@ end process;
 
 -- Next-State Logic
 r_inc <= r_reg + 1;
-r_next <= 0 when (mod_m = r_inc) else r_inc;
+r_next <= 0 when (mod_m >= r_inc) else r_inc;
 
 -- Output
 tick <= '1' when r_reg = mod_m else

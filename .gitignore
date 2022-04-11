@@ -9,6 +9,12 @@
 !*.pdf
 !*/
 !.gitignore
+
+/vhdl-project-uart.sim
+/vhdl-project-uart.ip_user_files
+/vhdl-project-uart.hw
+/vhdl-project-uart.cache
+
 ###########################################################################
 ##	VIVADO
 ###########################################################################

@@ -90,3 +90,5 @@
 !*.xmp
 
 /vhdl-project-uart.cache\wt\
+/.Xil
+/vhdl-project-uart.runs

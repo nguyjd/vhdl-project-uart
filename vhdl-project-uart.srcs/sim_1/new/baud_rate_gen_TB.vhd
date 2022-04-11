@@ -16,7 +16,7 @@ architecture Behavioral of baud_rate_gen_TB is
     signal clk, tick: std_logic := '0';
     
     -- Clock Period 
-    constant Tclk: time := 20 ns;
+    constant Tclk: time := 1.4992503748126 ns;
 
 begin
 

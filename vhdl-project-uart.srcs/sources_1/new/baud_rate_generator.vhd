@@ -8,7 +8,7 @@ entity baud_rate_generator is
     generic(baud_rate: natural := 9600;
             clk_freq: natural := 667000000;
             sample_rate: natural := 16);
-    port(clk: in std_logic;  
+    port(clk, reset: in std_logic;  
          tick: out std_logic  
     ); 
 end baud_rate_generator;
@@ -23,10 +23,12 @@ signal r_next, r_reg, r_inc: unsigned(reg_width - 1 downto 0) := (others => '0')
 begin
 
 -- D FF Memory
-process(clk)
+process(clk, reset)
 begin
-
-    if (clk'event and clk = '1') then
+    
+    if (reset = '1') then
+        r_reg <= (others => '0');
+    elsif (clk'event and clk = '1') then
         r_reg <= r_next;
     end if;
 

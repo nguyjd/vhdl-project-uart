@@ -3,10 +3,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.math_real.all;
 
-
 entity baud_rate_generator is
     generic(baud_rate: natural := 9600;
-            clk_freq: natural := 667000000;
+            clk_freq: natural := 50000000;
             sample_rate: natural := 16);
     port(clk, reset: in std_logic;  
          tick: out std_logic  

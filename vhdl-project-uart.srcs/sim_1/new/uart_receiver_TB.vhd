@@ -3,8 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity uart_receiver_TB is
-    generic(D_BIT: natural := 8;
-            SAMPLE_TICKS: natural := 16);
+    generic(D_BIT: natural := 8);
 end uart_receiver_TB;
 
 architecture Behavioral of uart_receiver_TB is

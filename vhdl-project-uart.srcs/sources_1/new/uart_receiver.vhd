@@ -26,24 +26,16 @@ signal data_reg, data_next: std_logic_vector(D_BIT - 1 downto 0) := (others => '
 
 begin
 
--- State Register
+-- State Register and Internal Registers
 process (clk, reset)
 begin
      if (reset = '1') then
         statereg <= idle;
-     elsif (clk'event and clk = '1') then
-        statereg <= statenext;
-     end if;
-end process;
-
--- Internal Registers
-process (clk, reset)
-begin
-     if (reset = '1') then
         sample_count_reg <= (others => '0');
         data_count_reg <= (others => '0');
         data_reg <= (others => '0');
      elsif (clk'event and clk = '1') then
+        statereg <= statenext;
         sample_count_reg <= sample_count_next;
         data_count_reg <= data_count_next;
         data_reg <= data_next;

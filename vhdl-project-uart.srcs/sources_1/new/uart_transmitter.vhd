@@ -3,27 +3,29 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.math_real.all;
 
-entity uart_receiver is
+entity uart_transmitter is
     generic(D_BIT: natural := 8;
             SAMPLE_TICKS: natural := 16);
-    port(clk, rx, s_tick, reset: in std_logic;  
-         rx_done_tick: out std_logic;
-         data_out: out std_logic_vector(D_BIT - 1 downto 0)
-    ); 
-end uart_receiver;
+    port(clk, reset: in std_logic;
+         tx_start: in std_logic;
+         s_tick: in std_logic;
+         data_in: in std_logic_vector(D_BIT - 1 downto 0);
+         tx_done_tick: out std_logic;
+         tx: out std_logic);
+end uart_transmitter;
 
---NOTE: This does reverse the order that the bits are in. Not sure what is the right way.
-architecture Behavioral of uart_receiver is
+architecture Behavioral of uart_transmitter is
 
-type states is (idle, stop, start, data);
-signal statereg, statenext: states;
-
-constant sample_count_reg_width : natural := natural(ceil(log2(real(SAMPLE_TICKS))));
-constant data_count_width : natural := natural(ceil(log2(real(D_BIT))));
-
-signal sample_count_reg, sample_count_next: unsigned(sample_count_reg_width - 1 downto 0) := (others => '0');
-signal data_count_reg, data_count_next: unsigned(data_count_width - 1 downto 0) := (others => '0');
-signal data_reg, data_next: std_logic_vector(D_BIT - 1 downto 0) := (others => '0');
+    type states is (idle, stop, start, data);
+    signal statereg, statenext: states;
+    
+    constant sample_count_reg_width : natural := natural(ceil(log2(real(SAMPLE_TICKS))));
+    constant data_count_width : natural := natural(ceil(log2(real(D_BIT))));
+    
+    signal sample_count_reg, sample_count_next: unsigned(sample_count_reg_width - 1 downto 0) := (others => '0');
+    signal data_count_reg, data_count_next: unsigned(data_count_width - 1 downto 0) := (others => '0');
+    signal data_reg, data_next: std_logic_vector(D_BIT - 1 downto 0) := (others => '0');
+    signal tx_reg, tx_next: std_logic := '1';
 
 begin
 
@@ -35,33 +37,38 @@ begin
             sample_count_reg <= (others => '0');
             data_count_reg <= (others => '0');
             data_reg <= (others => '0');
+            tx_reg <= '1';
          elsif (clk'event and clk = '1') then
             statereg <= statenext;
             sample_count_reg <= sample_count_next;
             data_count_reg <= data_count_next;
             data_reg <= data_next;
+            tx_reg <= tx_next;
          end if;
     end process;
     
     -- Next State Logic
-    process(statereg, rx, sample_count_reg, data_count_reg, data_reg, s_tick)
+    process(statereg, tx_start, sample_count_reg, data_count_reg, data_reg, tx_reg, s_tick, data_in)
     begin
+    
         case statereg is
             when idle =>
-                rx_done_tick <= '0';
-                if (rx = '0') then
+                tx_done_tick <= '0';
+                tx_next <= '1';
+                if (tx_start = '1') then
                     statenext <= start;
                     sample_count_next <= (others => '0');
+                    data_next <= data_in;
                 else
                     statenext <= idle;
                 end if;
                 
             when start =>
+                tx_next <= '0';
                 if (s_tick = '1') then
-                    if (sample_count_reg = ((SAMPLE_TICKS / 2) - 1)) then
+                    if (sample_count_reg = (SAMPLE_TICKS - 1)) then
                         sample_count_next <= (others => '0');
                         data_count_next <= (others => '0');
-                        data_next <= (others => '0');
                         statenext <= data; 
                     else
                         sample_count_next <= sample_count_next + 1;
@@ -71,10 +78,12 @@ begin
                 end if;
                 
             when data =>
+                
+                tx_next <= data_reg(0);
                 if (s_tick = '1') then
                     if (sample_count_reg = (SAMPLE_TICKS - 1)) then
                         sample_count_next <= (others => '0');
-                        data_next <= rx & data_reg(D_BIT - 1 downto 1);
+                        data_next <= '0' & data_reg(D_BIT - 1 downto 1); 
                         if (data_count_reg = (D_BIT - 1)) then
                             statenext <= stop;
                         else
@@ -88,10 +97,11 @@ begin
                 end if;
             
             when stop =>
+                tx_next <= '1';
                 if (s_tick = '1') then
                     if (sample_count_reg = (SAMPLE_TICKS - 1)) then
                         statenext <= idle;
-                        rx_done_tick <= '1';
+                        tx_done_tick <= '1';
                     else
                         sample_count_next <= sample_count_reg + 1;
                     end if;
@@ -99,9 +109,11 @@ begin
                     statenext <= stop; 
                 end if;
         end case;
+    
     end process;
     
-    -- Output Logic     
-    data_out <= data_reg;
+    -- Output Logic
+    tx <= tx_reg;
+
 
 end Behavioral;

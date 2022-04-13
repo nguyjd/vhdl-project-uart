@@ -58,7 +58,7 @@ begin
     
     wait for 14 ns;
     
-    -- 00011100 
+    -- 00111000 
    
     rx <= '0';
     wait for 32 ns;
@@ -84,7 +84,7 @@ begin
     
     wait for 14 ns;
     
-    -- 00101001
+    -- 10010100
     
     rx <= '0';
     wait for 32 ns;

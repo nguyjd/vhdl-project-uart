@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 04/05/2022 11:53:15 AM
+-- Create Date: 04/12/2022 08:02:24 PM
 -- Design Name: 
--- Module Name: UART - Behavioral
+-- Module Name: uart_system - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,11 +31,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity UART is
+entity uart_system is
 --  Port ( );
-end UART;
+end uart_system;
 
-architecture Behavioral of UART is
+architecture Behavioral of uart_system is
 
 begin
 

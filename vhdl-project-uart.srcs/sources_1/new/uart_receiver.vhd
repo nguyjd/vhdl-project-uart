@@ -74,10 +74,10 @@ begin
                 if (s_tick = '1') then
                     if (sample_count_reg = (SAMPLE_TICKS - 1)) then
                         sample_count_next <= (others => '0');
+                        data_next <= rx & data_reg(D_BIT - 1 downto 1);
                         if (data_count_reg = (D_BIT - 1)) then
                             statenext <= stop;
                         else
-                            data_next <= rx & data_reg(D_BIT - 1 downto 1);
                             data_count_next <= data_count_reg + 1;
                         end if;
                     else

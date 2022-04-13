@@ -48,10 +48,10 @@ begin
     begin
         case statereg is
             when idle =>
+                rx_done_tick <= '0';
                 if (rx = '0') then
                     statenext <= start;
                     sample_count_next <= (others => '0');
-                    rx_done_tick <= '0';
                 else
                     statenext <= idle;
                 end if;

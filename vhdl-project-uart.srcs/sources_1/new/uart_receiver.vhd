@@ -77,7 +77,7 @@ begin
                         if (data_count_reg = (D_BIT - 1)) then
                             statenext <= stop;
                         else
-                            data_next <= rx & data_reg(7 downto 1);
+                            data_next <= rx & data_reg(D_BIT - 1 downto 1);
                             data_count_next <= data_count_reg + 1;
                         end if;
                     else

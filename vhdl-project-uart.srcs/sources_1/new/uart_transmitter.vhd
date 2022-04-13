@@ -50,7 +50,7 @@ begin
     -- Next State Logic
     process(statereg, tx_start, sample_count_reg, data_count_reg, data_reg, tx_reg, s_tick, data_in)
     begin
-    
+        
         case statereg is
             when idle =>
                 tx_done_tick <= '0';
@@ -59,8 +59,6 @@ begin
                     statenext <= start;
                     sample_count_next <= (others => '0');
                     data_next <= data_in;
-                else
-                    statenext <= idle;
                 end if;
                 
             when start =>
@@ -71,7 +69,7 @@ begin
                         data_count_next <= (others => '0');
                         statenext <= data; 
                     else
-                        sample_count_next <= sample_count_next + 1;
+                        sample_count_next <= sample_count_reg + 1;
                     end if;
                 else
                     statenext <= start; 

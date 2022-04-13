@@ -80,7 +80,7 @@ begin
     process
     begin
     
-        wait for 20 ns;
+        wait for 19 ns;
     
         data_in <= "00111000";
         tx_start <= '1';

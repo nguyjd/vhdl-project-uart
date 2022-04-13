@@ -61,7 +61,7 @@ begin
     process
     begin
     
-        wait for 20 ns;
+        wait for 19 ns;
     
         data_in <= "01011100";
         tx_start <= '1';

@@ -9,7 +9,7 @@ entity uart_transmitter is
     port(clk, reset: in std_logic;
          tx_start: in std_logic;
          s_tick: in std_logic;
-         data_in: in std_logic_vector(7 downto 0);
+         data_in: in std_logic_vector(D_BIT - 1 downto 0);
          tx_done_tick: out std_logic;
          tx: out std_logic);
 end uart_transmitter;

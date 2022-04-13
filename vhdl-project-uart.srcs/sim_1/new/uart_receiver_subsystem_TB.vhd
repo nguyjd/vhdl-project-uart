@@ -21,8 +21,17 @@ architecture Behavioral of uart_receiver_subsystem_TB is
                 data_in : in std_logic_vector (D_WIDTH - 1 downto 0);
                 full, empty : out std_logic);
     end component;
+    
+    component uart_transmitter is
+        port(clk, reset: in std_logic;
+         tx_start: in std_logic;
+         s_tick: in std_logic;
+         data_in: in std_logic_vector(D_WIDTH - 1 downto 0);
+         tx_done_tick: out std_logic;
+         tx: out std_logic);
+    end component;
 
-    signal rx, s_tick, rx_done_tick: std_logic := '0';
+    signal rx, s_tick, rx_done_tick, tx_start, tx_done_tick: std_logic := '0';
     
     signal clk, reset, read_req, full, empty : std_logic := '0';
     signal data_out, rx_data, data_in: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
@@ -48,6 +57,14 @@ begin
                                 data_in => rx_data,
                                 full => full,
                                 empty => empty);
+                                
+    UUT3 : uart_transmitter port map (clk => clk, 
+                                      tx => rx,
+                                      tx_start => tx_start,
+                                      s_tick => s_tick,
+                                      reset => reset,
+                                      tx_done_tick => tx_done_tick,
+                                      data_in => data_in);
     
     clk_pulse: process
     begin
@@ -63,65 +80,25 @@ begin
     process
     begin
     
-        reset <= '1';
+        wait for 20 ns;
+    
+        data_in <= "00111000";
+        tx_start <= '1';
+        s_tick <= '1';
         
         wait for 2 ns;
         
-        reset <= '0';
+        tx_start <= '0';
+        
+        wait for 1000 ns;
+        data_in <= "10010100";
+        tx_start <= '1';
         
         wait for 2 ns;
         
-        s_tick <= '1';
-        rx <= '0';
+        tx_start <= '0';
         
-        wait for 14 ns;
-        
-        -- 00111000 
-       
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 100 ns;
-        
-        s_tick <= '1';
-        rx <= '0';
-        
-        wait for 14 ns;
-        
-        -- 10010100
-        
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '0';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 32 ns;
-        rx <= '1';
-        wait for 101 ns;
+        wait for 1000 ns;
         
         read_req <= '1';
         wait for 2 ns;
@@ -136,6 +113,5 @@ begin
         wait;
     
     end process;
-
 
 end Behavioral;

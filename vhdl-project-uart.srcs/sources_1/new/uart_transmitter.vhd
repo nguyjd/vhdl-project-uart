@@ -55,7 +55,7 @@ begin
             when idle =>
                 tx_done_tick <= '0';
                 tx_next <= '1';
-                if (tx_start = '0') then
+                if (tx_start = '1') then
                     statenext <= start;
                     sample_count_next <= (others => '0');
                     data_next <= data_in;
@@ -83,10 +83,10 @@ begin
                 if (s_tick = '1') then
                     if (sample_count_reg = (SAMPLE_TICKS - 1)) then
                         sample_count_next <= (others => '0');
+                        data_next <= '0' & data_reg(D_BIT - 1 downto 1); 
                         if (data_count_reg = (D_BIT - 1)) then
                             statenext <= stop;
                         else
-                            data_next <= '0' & data_reg(D_BIT - 1 downto 1); 
                             data_count_next <= data_count_reg + 1;
                         end if;
                     else

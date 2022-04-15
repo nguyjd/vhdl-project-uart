@@ -20,7 +20,7 @@ architecture Behavioral of register_file is
     
 begin
 
-    process (clk, reset, write_enable, write_addr, write_data) 
+    process (clk, reset, read_addr, write_enable, write_addr, write_data) 
     begin
         
         -- Normal reset
@@ -32,11 +32,10 @@ begin
                 registerfile(TO_INTEGER(unsigned(write_addr))) <= write_data;
             end if;
             
+            read_data <= registerfile(TO_INTEGER(unsigned(read_addr)));
+            
         end if;
         
     end process;
     
-    -- Output Logic
-    read_data <= registerfile(TO_INTEGER(unsigned(read_addr)));
-
 end Behavioral;

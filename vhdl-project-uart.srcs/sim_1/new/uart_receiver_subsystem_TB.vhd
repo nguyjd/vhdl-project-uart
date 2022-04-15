@@ -104,7 +104,7 @@ begin
         wait for 2 ns;
         
         read_req <= '0';
-        wait for 2 ns;
+        wait for 8 ns;
         
         read_req <= '1';
         wait for 2 ns;

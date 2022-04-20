@@ -44,6 +44,8 @@ architecture Behavioral of uart_receiver_subsystem_TB is
     
     -- Clock Period 
     constant Tclk: time := 20 ns;
+    
+    signal counter : natural := 0;
 
 begin
 
@@ -102,6 +104,29 @@ begin
         wait until (s_tick'event and s_tick = '1');
         
         tx_start <= '0';
+        
+        
+        while (full = '0') loop
+        
+            -- Wait until the transmitter is done sending data
+            wait until (tx_done_tick'event and tx_done_tick = '1');
+            -- Wait for 8 clock cycle.
+            wait for 8*Tclk;
+            
+            data_in <= std_logic_vector(TO_UNSIGNED(counter, 8));
+            counter <= counter + 1;
+            
+            wait until (s_tick'event and s_tick = '1');
+            
+            tx_start <= '1';
+            
+            wait until (s_tick'event and s_tick = '1');
+            
+            tx_start <= '0';
+        
+        end loop;
+        
+        
         wait;
     
     end process;

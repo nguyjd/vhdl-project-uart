@@ -26,6 +26,7 @@ begin
         -- Normal reset
         if (reset = '1') then
             registerfile <= (others => (others => '0'));
+            read_data <= (others => '0');
         elsif (clk'event and clk = '1') then
             
             if (write_enable = '1') then

@@ -27,18 +27,22 @@ begin
     
     if (reset = '1') then
         r_reg <= (others => '0');
+        tick <= '0';
     elsif (clk'event and clk = '1') then
         r_reg <= r_next;
+        
+        if (r_reg = 0) then
+            tick <= '1';
+        else
+            tick <= '0';
+        end if;
+        
     end if;
 
 end process;
 
 -- Next-State Logic
 r_inc <= r_reg + 1;
-r_next <= (others => '0') when (mod_m <= r_inc) else r_inc;
-
--- Output
-tick <= '1' when (mod_m <= r_inc) else
-        '0';
+r_next <= (others => '0') when (mod_m = r_inc) else r_inc;
 
 end Behavioral;

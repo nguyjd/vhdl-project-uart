@@ -71,8 +71,6 @@ begin
                     else
                         sample_count_next <= sample_count_reg + 1;
                     end if;
-                else
-                    statenext <= start; 
                 end if;
                 
             when data =>
@@ -90,8 +88,6 @@ begin
                     else
                         sample_count_next <= sample_count_reg + 1;
                     end if;
-                else
-                    statenext <= data; 
                 end if;
             
             when stop =>
@@ -103,8 +99,6 @@ begin
                     else
                         sample_count_next <= sample_count_reg + 1;
                     end if;
-                else
-                    statenext <= stop; 
                 end if;
         end case;
     

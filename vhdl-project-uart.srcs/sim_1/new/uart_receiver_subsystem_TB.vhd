@@ -30,6 +30,12 @@ architecture Behavioral of uart_receiver_subsystem_TB is
          tx_done_tick: out std_logic;
          tx: out std_logic);
     end component;
+    
+    component baud_rate_generator is 
+        port(clk, reset: in std_logic;  
+            tick: out std_logic  
+        ); 
+    end component;
 
     signal rx, s_tick, rx_done_tick, tx_start, tx_done_tick: std_logic := '0';
     
@@ -37,7 +43,7 @@ architecture Behavioral of uart_receiver_subsystem_TB is
     signal data_out, rx_data, data_in: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
     
     -- Clock Period 
-    constant Tclk: time := 2 ns;
+    constant Tclk: time := 20 ns;
 
 begin
 
@@ -65,6 +71,8 @@ begin
                                       reset => reset,
                                       tx_done_tick => tx_done_tick,
                                       data_in => data_in);
+                                      
+    UUT : baud_rate_generator port map (clk => clk, reset => reset, tick => s_tick);
     
     clk_pulse: process
     begin
@@ -80,36 +88,20 @@ begin
     process
     begin
     
-        wait for 19 ns;
+        reset <= '1';
     
+        wait for 8*Tclk;
+        
+        reset <= '0';
         data_in <= "00111000";
-        tx_start <= '1';
-        s_tick <= '1';
         
-        wait for 2 ns;
+        wait until (s_tick'event and s_tick = '1');
         
-        tx_start <= '0';
-        
-        wait for 1000 ns;
-        data_in <= "10010100";
         tx_start <= '1';
         
-        wait for 2 ns;
+        wait until (s_tick'event and s_tick = '1');
         
         tx_start <= '0';
-        
-        wait for 1000 ns;
-        
-        read_req <= '1';
-        wait for 2 ns;
-        
-        read_req <= '0';
-        wait for 8 ns;
-        
-        read_req <= '1';
-        wait for 2 ns;
-        
-        read_req <= '0';
         wait;
     
     end process;

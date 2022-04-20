@@ -42,8 +42,14 @@ begin
         wait for Tclk/2;
         
         clk <= '1';
-        data_in <= std_logic_vector(counter);
-        counter <= counter + 1;
+        
+        if reset <= '0' then
+        
+            data_in <= std_logic_vector(counter);
+            counter <= counter + 1;
+        
+        end if;
+        
         wait for Tclk/2;
     
     end process;
@@ -51,6 +57,11 @@ begin
     process 
     begin
         
+        reset <= '1';
+        
+        wait for 8*Tclk;
+        
+        reset <= '0';
         write_req <= '1';
     
         wait until (full = '1');

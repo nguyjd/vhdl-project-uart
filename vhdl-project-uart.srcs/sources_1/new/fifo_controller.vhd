@@ -42,7 +42,7 @@ begin
     empty_signal <= '1' when (w_pointer = r_pointer) else
                     '0';
              
-    -- Full when the MSB is not equal.
+    -- Full when the MSB is not equal and the rest of the bits are equal.
     full_signal <=  '1' when ((w_pointer(ADDR_WIDTH) /= r_pointer(ADDR_WIDTH)) and 
                                w_pointer(ADDR_WIDTH - 1 downto 0) = r_pointer(ADDR_WIDTH - 1 downto 0))  
                     else '0';

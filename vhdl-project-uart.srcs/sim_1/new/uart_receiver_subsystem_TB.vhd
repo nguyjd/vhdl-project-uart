@@ -22,15 +22,6 @@ architecture Behavioral of uart_receiver_subsystem_TB is
                 full, empty : out std_logic);
     end component;
     
-    component uart_transmitter is
-        port(clk, reset: in std_logic;
-         tx_start: in std_logic;
-         s_tick: in std_logic;
-         data_in: in std_logic_vector(D_WIDTH - 1 downto 0);
-         tx_done_tick: out std_logic;
-         tx: out std_logic);
-    end component;
-    
     component baud_rate_generator is 
         port(clk, reset: in std_logic;  
             tick: out std_logic  
@@ -40,7 +31,7 @@ architecture Behavioral of uart_receiver_subsystem_TB is
     signal rx, s_tick, rx_done_tick, tx_start, tx_done_tick: std_logic := '0';
     
     signal clk, reset, read_req, full, empty : std_logic := '0';
-    signal data_out, rx_data, data_in: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
+    signal data_out, rx_data: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
     
     -- Clock Period 
     constant Tclk: time := 20 ns;
@@ -65,14 +56,6 @@ begin
                                 data_in => rx_data,
                                 full => full,
                                 empty => empty);
-                                
-    UUT3 : uart_transmitter port map (clk => clk, 
-                                      tx => rx,
-                                      tx_start => tx_start,
-                                      s_tick => s_tick,
-                                      reset => reset,
-                                      tx_done_tick => tx_done_tick,
-                                      data_in => data_in);
                                       
     UUT : baud_rate_generator port map (clk => clk, reset => reset, tick => s_tick);
     
@@ -91,42 +74,110 @@ begin
     begin
     
         reset <= '1';
-    
+        rx <= '1';
         wait for 8*Tclk;
         
+        -- Start receving
         reset <= '0';
-        data_in <= "00111000";
+        rx <= '0';
         
-        wait until (s_tick'event and s_tick = '1');
+        while counter /= 15 loop
         
-        tx_start <= '1';
-        
-        wait until (s_tick'event and s_tick = '1');
-        
-        tx_start <= '0';
-        
-        
-        while (full = '0') loop
-        
-            -- Wait until the transmitter is done sending data
-            wait until (tx_done_tick'event and tx_done_tick = '1');
-            -- Wait for 8 clock cycle.
-            wait for 8*Tclk;
-            
-            data_in <= std_logic_vector(TO_UNSIGNED(counter, 8));
+            wait until (s_tick'event and s_tick = '1');
             counter <= counter + 1;
-            
-            wait until (s_tick'event and s_tick = '1');
-            
-            tx_start <= '1';
-            
-            wait until (s_tick'event and s_tick = '1');
-            
-            tx_start <= '0';
         
         end loop;
         
+        counter <= 0;
+        wait for Tclk;
         
+        -- Sending 00111000
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '1';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '1';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '1';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        while counter /= 15 loop
+        
+            wait until (s_tick'event and s_tick = '1');
+            counter <= counter + 1;
+        
+        end loop;
+        counter <= 0;
+        wait for Tclk;
+        
+        rx <= '0';
         wait;
     
     end process;

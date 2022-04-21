@@ -7,13 +7,6 @@ entity uart_transmitter_TB is
 end uart_transmitter_TB;
 
 architecture Behavioral of uart_transmitter_TB is
-
-    component uart_receiver is
-        port(clk, rx, s_tick, reset: in std_logic;  
-         rx_done_tick: out std_logic;
-         data_out: out std_logic_vector(D_BIT - 1 downto 0)
-        ); 
-    end component;
     
     component uart_transmitter is
         port(clk, reset: in std_logic;
@@ -24,28 +17,30 @@ architecture Behavioral of uart_transmitter_TB is
          tx: out std_logic);
     end component;
     
-    signal clk, rx, s_tick, reset, rx_done_tick, tx_done_tick, tx_start: std_logic := '0';
+    component baud_rate_generator is 
+        port(clk, reset: in std_logic;  
+            tick: out std_logic  
+        ); 
+    end component;
+
+    
+    signal clk, rx, s_tick, reset, tx_done_tick, tx_start: std_logic := '0';
     signal data_out, data_in: std_logic_vector(D_BIT - 1 downto 0) := (others => '0');
 
     -- Clock Period 
     constant Tclk: time := 2 ns;
 
 begin
-
-    UUT1 : uart_receiver port map (clk => clk, 
-                                  rx => rx,
-                                  s_tick => s_tick,
-                                  reset => reset,
-                                  rx_done_tick => rx_done_tick,
-                                  data_out => data_out);
                                   
-    UUT2 : uart_transmitter port map (clk => clk, 
+    UUT : uart_transmitter port map (clk => clk, 
                                       tx => rx,
                                       tx_start => tx_start,
                                       s_tick => s_tick,
                                       reset => reset,
                                       tx_done_tick => tx_done_tick,
                                       data_in => data_in);
+                                      
+    baud : baud_rate_generator port map (clk => clk, reset => reset, tick => s_tick);
                                       
     clk_pulse: process
     begin
@@ -60,14 +55,15 @@ begin
     
     process
     begin
-    
-        wait for 19 ns;
-    
+        
+        reset <= '1';
+        wait for 8*Tclk;
+        
+        reset <= '0';
         data_in <= "01011100";
         tx_start <= '1';
-        s_tick <= '1';
         
-        wait for 2 ns;
+        wait for Tclk;
         
         tx_start <= '0';
         

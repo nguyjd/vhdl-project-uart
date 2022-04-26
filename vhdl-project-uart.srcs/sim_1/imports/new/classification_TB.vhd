@@ -14,49 +14,63 @@ component classification_engine is
         data_out : out std_logic_vector(2 downto 0));
 end component;
 
-signal clk, reset : std_logic := '0';
-signal data_in: std_logic_vector(7 downto 0) := (others => '0');
-signal data_out : std_logic_vector(2 downto 0) := (others => '0');
+    signal clk, reset : std_logic := '0';
+    signal data_in: std_logic_vector(7 downto 0) := (others => '0');
+    signal data_out : std_logic_vector(2 downto 0) := (others => '0');
+
+    -- Clock Period 
+    constant Tclk: time := 20 ns;
 
 begin
 
-UUT : classification_engine port map (clk => clk, reset => reset, data_in => data_in, data_out => data_out);
---20ns Period CLK
+    UUT : classification_engine port map (clk => clk, reset => reset, data_in => data_in, data_out => data_out);
+    --20ns Period CLK
+    
     clockProcess : PROCESS
     BEGIN
         clk <= '0';
-        WAIT FOR 10ns;
+        WAIT FOR Tclk/2;
         clk <= '1';
-        WAIT FOR 10ns;
+        WAIT FOR Tclk/2;
     END PROCESS;
     
     --Reset Process
     resetProcess : PROCESS
     BEGIN
         reset <= '1';
-        wait for 160ns;
+        wait for 8*Tclk;
+        
         reset <= '0';
-        WAIT FOR 600ns;
-        reset <= '1';
-        WAIT FOR 20ns;
-        reset <= '0';
+        wait;
+        
     END PROCESS;
     
     --enable <= '1';
     dataProcess : PROCESS
     BEGIN
-    --Uppper
+        
+        -- Wait for reset.
+        wait for 8*Tclk;
+        
+        data_in <= std_logic_vector(to_unsigned(0, 8));
+        wait for 3*Tclk;    
+        
+        --Uppper
         data_in <= std_logic_vector(to_unsigned(70, 8));
-        wait for 66ns;
-    --Lower
+        wait for 3*Tclk;
+        
+        --Lower
         data_in <= std_logic_vector(to_unsigned(100, 8));
-        wait for 66ns;
-    --Num
+        wait for 3*Tclk;
+        
+        --Num
         data_in <= std_logic_vector(to_unsigned(50, 8));
-        wait for 66ns;
-    --Symb
+        wait for 3*Tclk;
+        
+        --Symb
         data_in <= std_logic_vector(to_unsigned(10, 8));
-        wait for 66ns;
+        wait for 3*Tclk;
+    
     end process;
 
 end Behavioral;

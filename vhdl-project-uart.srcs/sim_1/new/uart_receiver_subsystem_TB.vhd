@@ -81,103 +81,50 @@ begin
         reset <= '0';
         rx <= '0';
         
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         -- Sending 00111000
         rx <= '0';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '0';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '0';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '1';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '1';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '1';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '0';
         
         -- Allow the RX to oversample.
-        while counter /= 15 loop
-        
-            wait until (s_tick'event and s_tick = '1');
-            counter <= counter + 1;
-        
-        end loop;
-        counter <= 0;
-        wait for Tclk;
+        wait for 16*6500 ns;
         
         rx <= '0';
+        
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '1';
         wait;
     
     end process;

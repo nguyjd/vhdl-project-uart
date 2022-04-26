@@ -35,7 +35,7 @@ process(clk, reset)
     
     process(data_in)
         begin
-        -- Unknown ASCII Range (< 0, > 255) - 0.
+        -- Unknown ASCII Range (< 32, > 126) - 0.
             if((to_integer(unsigned(data_in)) < 32) or (to_integer(unsigned(data_in)) > 126)) then
                 data_next <= std_logic_vector(to_unsigned(0, 8));
                 

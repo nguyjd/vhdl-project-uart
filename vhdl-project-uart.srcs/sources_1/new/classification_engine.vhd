@@ -13,12 +13,12 @@ entity classification_engine is
     port(
         clk, reset : in std_logic;
         data_in : in std_logic_vector(7 downto 0);
-        data_out : out std_logic_vector(2 downto 0));
+        data_out : out std_logic_vector(7 downto 0));
 end classification_engine;
 
 architecture Behavioral of classification_engine is
 
-signal data_reg, data_next : std_logic_vector(2 downto 0) :=(others=>'0');
+signal data_reg, data_next : std_logic_vector(7 downto 0) := (others=>'0');
 
 begin
 
@@ -37,26 +37,26 @@ process(clk, reset)
         begin
         -- Unknown ASCII Range (< 0, > 255) - 0.
             if((to_integer(unsigned(data_in)) < 32) or (to_integer(unsigned(data_in)) > 126)) then
-                data_next <= std_logic_vector(to_unsigned(0, 3));
+                data_next <= std_logic_vector(to_unsigned(0, 8));
                 
         -- Uppercase letter ASCII Range (65 - 90) - 1
             elsif((to_integer(unsigned(data_in)) >= 65) and (to_integer(unsigned(data_in)) <= 90)) then
-                data_next <= std_logic_vector(to_unsigned(1, 3));  
+                data_next <= std_logic_vector(to_unsigned(1, 8));  
                 
         -- Lowercase ASCII Range (97 - 122) - 2
             elsif(((to_integer(unsigned(data_in)) >= 97) and (to_integer(unsigned(data_in)) <= 122))) then
-                data_next <= std_logic_vector(to_unsigned(2, 3));  
+                data_next <= std_logic_vector(to_unsigned(2, 8));  
                 
         -- Number ASCII Range (48 - 57) - 3
             elsif((to_integer(unsigned(data_in)) >= 48) and (to_integer(unsigned(data_in)) <= 57)) then
-                data_next <= std_logic_vector(to_unsigned(3, 3));  
+                data_next <= std_logic_vector(to_unsigned(3, 8));  
                 
         -- Symbol ASCII Range (32 - 47, 58 - 64, 91 - 96, and 123 - 126) - 4
             elsif(((to_integer(unsigned(data_in)) >= 32) and (to_integer(unsigned(data_in)) <= 47))
             or ((to_integer(unsigned(data_in)) >= 58) and (to_integer(unsigned(data_in)) <= 64))
             or ((to_integer(unsigned(data_in)) >= 91) and (to_integer(unsigned(data_in)) <= 96))
             or ((to_integer(unsigned(data_in)) >= 123) and (to_integer(unsigned(data_in)) <= 126))) then
-                data_next <= std_logic_vector(to_unsigned(4, 3));          
+                data_next <= std_logic_vector(to_unsigned(4, 8));          
             end if;
                      
           end process;        

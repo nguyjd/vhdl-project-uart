@@ -8,7 +8,8 @@ entity single_port_ram is
               ADDR_WIDTH: natural := 8);
     port (clk : in std_logic;
           write_enable : in std_logic;
-          data_address : in std_logic_vector(ADDR_WIDTH-1 downto 0);
+          write_address : in std_logic_vector(ADDR_WIDTH - 1 downto 0);
+          read_address : in std_logic_vector(ADDR_WIDTH - 1 downto 0);
           data_in : in std_logic_vector(D_WIDTH - 1 downto 0);
           data_out : out std_logic_vector(D_WIDTH - 1 downto 0));
 end single_port_ram;
@@ -23,13 +24,13 @@ begin
         if rising_edge(clk) then
         
             if (write_enable = '1') then
-                ram(to_integer(unsigned(data_address))) <= data_in;
+                ram(to_integer(unsigned(write_address))) <= data_in;
             end if;
             
         end if;
         
     end process;
     
-    data_out <= ram(to_integer(unsigned(data_address)));
+    data_out <= ram(to_integer(unsigned(read_address)));
 
 end Behavioral;

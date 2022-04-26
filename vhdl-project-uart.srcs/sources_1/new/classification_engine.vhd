@@ -3,11 +3,11 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 -- Given an ASCII input, outputs...
--- 0 - unknown char         (< 0, > 255)
+-- 0 - unknown char         (< 32 , > 126)
 -- 1 - uppercase letter     (65 - 90)
 -- 2 - lowercase letter     (97 - 122)
 -- 3 - numbers              (48 - 57)
--- 4 - symbols              (0 - 47, 58 - 64, 91 - 96, and 123 - 255)
+-- 4 - symbols              (32 - 47, 58 - 64, 91 - 96, and 123 - 126)
 
 entity classification_engine is
     port(
@@ -36,7 +36,7 @@ process(clk, reset)
     process(data_in)
         begin
         -- Unknown ASCII Range (< 0, > 255) - 0.
-            if((to_integer(unsigned(data_in)) < 0) or (to_integer(unsigned(data_in)) > 255)) then
+            if((to_integer(unsigned(data_in)) < 32) or (to_integer(unsigned(data_in)) > 126)) then
                 data_next <= std_logic_vector(to_unsigned(0, 3));
                 
         -- Uppercase letter ASCII Range (65 - 90) - 1
@@ -51,11 +51,11 @@ process(clk, reset)
             elsif((to_integer(unsigned(data_in)) >= 48) and (to_integer(unsigned(data_in)) <= 57)) then
                 data_next <= std_logic_vector(to_unsigned(3, 3));  
                 
-        -- Symbol ASCII Range (0 - 47, 58 - 64, 91 - 96, and 123 - 255) - 4
-            elsif(((to_integer(unsigned(data_in)) >= 0) and (to_integer(unsigned(data_in)) <= 47))
+        -- Symbol ASCII Range (32 - 47, 58 - 64, 91 - 96, and 123 - 126) - 4
+            elsif(((to_integer(unsigned(data_in)) >= 32) and (to_integer(unsigned(data_in)) <= 47))
             or ((to_integer(unsigned(data_in)) >= 58) and (to_integer(unsigned(data_in)) <= 64))
             or ((to_integer(unsigned(data_in)) >= 91) and (to_integer(unsigned(data_in)) <= 96))
-            or ((to_integer(unsigned(data_in)) >= 123) and (to_integer(unsigned(data_in)) <= 255))) then
+            or ((to_integer(unsigned(data_in)) >= 123) and (to_integer(unsigned(data_in)) <= 126))) then
                 data_next <= std_logic_vector(to_unsigned(4, 3));          
             end if;
                      

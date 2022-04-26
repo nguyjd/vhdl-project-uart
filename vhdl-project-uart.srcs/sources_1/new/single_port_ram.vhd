@@ -5,14 +5,13 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity single_port_ram is
     generic ( D_WIDTH: natural := 8;
-              ADDR_WIDTH: natural := 8;
-              WORDS: integer := 256);
+              ADDR_WIDTH: natural := 8);
     port (clk : in std_logic;
           write_enable : in std_logic;
           data_address : in std_logic_vector(ADDR_WIDTH-1 downto 0);
           data_in : in std_logic_vector(D_WIDTH - 1 downto 0);
           data_out : out std_logic_vector(D_WIDTH - 1 downto 0));
-    end single_port_ram;
+end single_port_ram;
 
 architecture Behavioral of single_port_ram is
     type ram_block is array (0 to 2**ADDR_WIDTH - 1) of std_logic_vector (D_WIDTH - 1 downto 0);

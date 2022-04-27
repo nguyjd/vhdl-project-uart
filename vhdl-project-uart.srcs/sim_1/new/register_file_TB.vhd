@@ -49,23 +49,25 @@ begin
     process
     begin
         
-        wait for 20 ns;
+        reset <= '1';
+        wait for 8*Tclk;
         
+        reset <= '0';
         write_addr <= "00101";
         read_addr <= "00101";
         write_enable <= '0';
         write_data <= "00110001";
         
-        wait for 20 ns;
+        wait for Tclk;
         
         write_enable <= '1';
         
-        wait for 20 ns;
+        wait for Tclk;
         
         write_addr <= "00000";
         write_data <= "00110111";
         
-        wait for 20 ns;
+        wait for Tclk;
         
         read_addr <= "00000";
         

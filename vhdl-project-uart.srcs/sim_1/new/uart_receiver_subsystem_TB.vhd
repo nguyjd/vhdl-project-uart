@@ -22,22 +22,21 @@ architecture Behavioral of uart_receiver_subsystem_TB is
                 full, empty : out std_logic);
     end component;
     
-    component uart_transmitter is
-        port(clk, reset: in std_logic;
-         tx_start: in std_logic;
-         s_tick: in std_logic;
-         data_in: in std_logic_vector(D_WIDTH - 1 downto 0);
-         tx_done_tick: out std_logic;
-         tx: out std_logic);
+    component baud_rate_generator is 
+        port(clk, reset: in std_logic;  
+            tick: out std_logic  
+        ); 
     end component;
 
     signal rx, s_tick, rx_done_tick, tx_start, tx_done_tick: std_logic := '0';
     
     signal clk, reset, read_req, full, empty : std_logic := '0';
-    signal data_out, rx_data, data_in: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
+    signal data_out, rx_data: std_logic_vector (D_WIDTH - 1 downto 0) := (others => '0');
     
     -- Clock Period 
-    constant Tclk: time := 2 ns;
+    constant Tclk: time := 20 ns;
+    
+    signal counter : natural := 0;
 
 begin
 
@@ -57,14 +56,8 @@ begin
                                 data_in => rx_data,
                                 full => full,
                                 empty => empty);
-                                
-    UUT3 : uart_transmitter port map (clk => clk, 
-                                      tx => rx,
-                                      tx_start => tx_start,
-                                      s_tick => s_tick,
-                                      reset => reset,
-                                      tx_done_tick => tx_done_tick,
-                                      data_in => data_in);
+                                      
+    UUT : baud_rate_generator port map (clk => clk, reset => reset, tick => s_tick);
     
     clk_pulse: process
     begin
@@ -80,36 +73,58 @@ begin
     process
     begin
     
-        wait for 20 ns;
-    
-        data_in <= "00111000";
-        tx_start <= '1';
-        s_tick <= '1';
+        reset <= '1';
+        rx <= '1';
+        wait for 8*Tclk;
         
-        wait for 2 ns;
+        -- Start receving
+        reset <= '0';
+        rx <= '0';
         
-        tx_start <= '0';
+        wait for 16*6500 ns;
         
-        wait for 1000 ns;
-        data_in <= "10010100";
-        tx_start <= '1';
+        -- Sending 00111000
+        rx <= '0';
         
-        wait for 2 ns;
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
         
-        tx_start <= '0';
+        rx <= '0';
         
-        wait for 1000 ns;
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
         
-        read_req <= '1';
-        wait for 2 ns;
+        rx <= '0';
         
-        read_req <= '0';
-        wait for 2 ns;
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
         
-        read_req <= '1';
-        wait for 2 ns;
+        rx <= '1';
         
-        read_req <= '0';
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '1';
+        
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '1';
+        
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '0';
+        
+        -- Allow the RX to oversample.
+        wait for 16*6500 ns;
+        
+        rx <= '1';
         wait;
     
     end process;

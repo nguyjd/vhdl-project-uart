@@ -11,8 +11,8 @@ end rx_ram_controller;
 
 architecture Behavioral of rx_ram_controller is
 
-    signal write_enable_reg, write_next: std_logic := '0';
-    signal rx_read_reg, read_next: std_logic := '0';
+    signal rx_empty_reg, rx_empty_next: std_logic := '1';
+    signal addr_inc_reg, addr_inc_next: std_logic := '1';
     signal addr_pointer, addr_next: unsigned(ADDR_WIDTH - 1 downto 0) := (others => '0');
 
 begin
@@ -22,23 +22,25 @@ begin
     begin
     
         if (reset = '1') then
-            write_enable_reg <= '0';
-            rx_read_reg <= '0';
+            rx_empty_reg <= '1';
+            addr_inc_reg <= '1';
             addr_pointer <= (others => '0');
         elsif (clk'event and clk = '1') then
-            write_enable_reg <= write_next;
-            rx_read_reg <= read_next;
             addr_pointer <= addr_next;
+            rx_empty_reg <= rx_empty_next;
+            addr_inc_reg <= addr_inc_next;
         end if;
     
     end process;
-
-    write_next <= '1' when rx_empty = '0' else '0';
-    read_next <= '1' when rx_empty = '0' else '0';
-    addr_next <= addr_pointer + 1 when write_enable_reg = '1' else addr_pointer;
     
-    rx_read <= rx_read_reg;
-    write_enable <= write_enable_reg;
+    rx_empty_next <= rx_empty;
+    addr_inc_next <= rx_empty_reg;
+    addr_next <= addr_pointer when addr_inc_next = '1' else 
+                 addr_pointer + 1 when addr_inc_reg = '0' 
+                 else addr_pointer;
+    
+    rx_read <= '1' when rx_empty_reg = '0' else '0';
+    write_enable <= '1' when rx_empty_reg = '0' else '0';
     write_addr <= std_logic_vector(addr_pointer);
 
 end Behavioral;
